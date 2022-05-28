@@ -1,6 +1,9 @@
 # Data Structures - Part I
 
 ## 217. Contains Duplicate
+<em>Hash Table</em>
+<em>Sorting</em>
+<em>Array</em>
 
 Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
 
@@ -18,7 +21,9 @@ class Solution:
  ```
  
  ## 53. Maximum Subarray
- 
+<em>Divide and Conquer</em> 
+<em>Array</em>
+
 Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum. A subarray is a contiguous part of an array.
 
 ```python
@@ -59,6 +64,23 @@ class Solution:
         (lows, highs, sums) = max_sub_array(nums,0, len(nums) - 1)
         return sums
 
+```
+
+## 1. Two Sum
+<em>Hash Table</em>
+<em>Array</em>
+
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.
+
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        hashmap = {}
+        for i in range(len(nums)):
+            complement = target - nums[i]
+            if complement in hashmap:
+                return [i, hashmap[complement]]
+            hashmap[nums[i]] = i
 ```
 
 

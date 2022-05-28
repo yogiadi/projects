@@ -347,5 +347,134 @@ class Solution:
                 return False
         return True
 ```
+## 141. Linked List Cycle
+Given head, the head of a linked list, determine if the linked list has a cycle in it. There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter. Return true if there is a cycle in the linked list. Otherwise, return false.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
 
-
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        li = []
+        if not head:
+            return False
+        li.append(head)
+        nextnode = head.next
+        while nextnode and nextnode not in li:
+            li.append(nextnode)
+            if not nextnode:
+                return False
+            nextnode = nextnode.next
+        if nextnode:
+            return True
+        else:
+            return False
+ ```
+## 21. Merge Two Sorted Lists
+You are given the heads of two sorted linked lists list1 and list2. Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists. Return the head of the merged linked list.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        prevhead = ListNode(-1)
+        currnode3 = prevhead
+        if not list1 and not list2:
+            return None
+        elif not list1:
+            return list2
+        elif not list2:
+            return list1
+        currnode1 = list1
+        currnode2 = list2
+        ## We are supposed to return prevhead.next , so even if we store prevhead with -1 it should not matter. currnode3 will be assigned a value of prevhead but in the subsequent steps it will be assigned currnode3.next = currnode1. then at the end treat it same as l1 and l2 where the next value is assigned to same variable currnode3. At the end we would simply return prevhead.next So it wouldn't return the value of prehead, it will start from its next value.
+        while currnode1 and currnode2:
+            if currnode1.val <= currnode2.val:
+                currnode3.next = currnode1
+                currnode1 = currnode1.next
+            else:
+                currnode3.next = currnode2
+                currnode2 = currnode2.next
+            currnode3 = currnode3.next
+        if currnode1 is None:
+            currnode3.next = currnode2
+        else:
+            currnode3.next = currnode1
+        return prevhead.next
+```
+## 203. Remove Linked List Elements
+Given the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val == val, and return the new head.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
+        # In this case, we need to check the next value rather than current value because current value means we have already added the current node, so we will begin with prevhead, in this case it would be 1. Then we can take another variable called nextnode = prevhead.next. Then check if nextnode.val is equal to val, if it is then go to next node by nextnode = nextnode.next and check again. Until we reach a solution where nextnode.val is not equal to val. In that case we would assign prevhead.next = nextnode and then prevhead = prevhead.next to keep iterating through while loop.
+        prevhead = ListNode(-1) # This seems to be essential so that logic is applied right from first node. In return statement we can send prevhead as well but ideal way is to send prevhead.next.
+        prevhead.next = head # To append existing header to prevhead
+        header = prevhead # To preserve prevhead and use it in return statement.
+        while header:# While loop is essential for linked list
+            nextnode = header.next
+            while nextnode and nextnode.val == val: # Check for all consecutive nodes if val is matching
+                nextnode = nextnode.next
+            header.next = nextnode # Assign the value of next node
+            # Above step is fine if nextnode is None because that is how LinkedNode id defined.
+            # Next step iteration to keep the outer while loop going and assign next val to head
+            header = header.next
+        return prevhead.next # Because prevhead is ours and prevhead.next is input as explained in line 10.
+```
+## 206. Reverse Linked List
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # Begin with iterating through all the nodes , brute way seems to be insert all of this in  a list and then create a new Linked list by iterating through given list.
+        li = [] # Define a list to store all data of linked list.
+        while head:# While loop to iterate through linked list
+            li.append(head.val) # append in list the next head val
+            head = head.next # Keep iteration going by assigning next value to head itself.
+        li.reverse()
+        prevhead = ListNode(-1)
+        header = prevhead
+        for i in range(len(li)):
+            currentnode = ListNode(li[i])
+            header.next = currentnode
+            header = header.next
+        return prevhead.next # As mentioned earlier return with prevhead.next
+```
+## 83. Remove Duplicates from Sorted List
+Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # for this we will start with -1 and check next node with nextnode = currentnode.next if it is equal to current one or the first next node. if it is equal then keep iterating else assign the current node with last node available currentnode.next = lastnode
+        prevhead = ListNode(-1) # basic step for ListNode
+        prevhead.next = head # Assign input head to append input linked node to prevhead
+        header = prevhead # keep a separate variable to loop through
+        while header:
+            nextnode = header.next
+            while nextnode and nextnode.next and nextnode.next.val == nextnode.val:
+                nextnode = nextnode.next
+            header.next = nextnode # Assign next val to header.next
+            header = header.next # Main logic to keep while loop flowing
+        return prevhead.next
+```

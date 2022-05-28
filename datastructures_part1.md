@@ -279,4 +279,73 @@ class Solution:
     # sub box 8 - (6,3),(6,5),(8,3),(8,5)
     # sub box 9 - (6,6),(6,8),(8,6),(8,8)
 ```
+## 74. Search a 2D Matrix
+Write an efficient algorithm that searches for a value target in an m x n integer matrix matrix. This matrix has the following properties:
+Integers in each row are sorted from left to right.
+The first integer of each row is greater than the last integer of the previous row.
+```python
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        for row in matrix:
+            if target >= row[0] and target <= row[-1]:
+                for elem in row:
+                    if target == elem:
+                        return True
+        return False        
+```
+## 387. First Unique Character in a String
+Given a string s, find the first non-repeating character in it and return its index. If it does not exist, return -1.
+```python
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        counter_dict = {}
+        for i in range(len(s)):
+            if s[i] in counter_dict:
+                counter_dict[s[i]][0] = counter_dict[s[i]][0] + 1
+            else:
+                counter_dict[s[i]] = [1, i]
+        print(counter_dict)
+        for key, val in counter_dict.items():
+            if val[0] == 1:
+                return val[1]
+        return -1
+```
+## 383. Ransom Note
+Given two strings ransomNote and magazine, return true if ransomNote can be constructed from magazine and false otherwise. Each letter in magazine can only be used once in ransomNote.
+```python
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        from collections import defaultdict
+        magazine_dict = defaultdict(int)
+        ransomnote_dict = defaultdict(int)
+        for elem in ransomNote:
+            ransomnote_dict[elem] = ransomnote_dict[elem] + 1
+        for elem in magazine:
+            magazine_dict[elem] = magazine_dict[elem] + 1
+        for key, val in ransomnote_dict.items():
+            if key not in magazine_dict or val > magazine_dict[key]:
+                return False
+        return True
+```
+## 242. Valid Anagram
+Given two strings s and t, return true if t is an anagram of s, and false otherwise. An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+```python
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        from collections import defaultdict
+        s_dict = defaultdict(int)
+        t_dict = defaultdict(int)
+        for elem in s:
+            s_dict[elem] = s_dict[elem] + 1
+        for elem in t:
+            t_dict[elem] = t_dict[elem] + 1
+        for key, val in s_dict.items():
+            if key not in t_dict or val != t_dict[key]:
+                return False
+        for key, val in t_dict.items():
+            if key not in s_dict or val != s_dict[key]:
+                return False
+        return True
+```
+
 

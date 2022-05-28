@@ -478,3 +478,131 @@ class Solution:
             header = header.next # Main logic to keep while loop flowing
         return prevhead.next
 ```
+## 20. Valid Parentheses
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+```python
+class Solution:
+    def isValid(self, s: str) -> bool:
+        # This logic will be implemented by stack. Iterate through given list and check if it is opening and closing. If it is opening then append it to stack , if it is closing , pop last element and check if it is corresponding openning element , if it's not return False , if it is continue.
+        opening_bracket = '[{('
+        closing_bracket = ')}]'
+        dict_bracket = {'}':'{', ']':'[',')':'('}
+        stacks = []
+        if len(s) == 1:
+            return False
+        for i in s:
+            if i in opening_bracket:
+                stacks.append(i)
+            else:
+                if (len(stacks) == 0) or not stacks.pop() == dict_bracket[i]: 
+                    return False
+        if stacks:
+            return False
+        else :
+            return True
+```
+## 232. Implement Queue using Stacks
+Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue (push, peek, pop, and empty).
+
+Implement the MyQueue class:
+
+void push(int x) Pushes element x to the back of the queue.
+int pop() Removes the element from the front of the queue and returns it.
+int peek() Returns the element at the front of the queue.
+boolean empty() Returns true if the queue is empty, false otherwise.
+```python
+class MyQueue:
+
+    def __init__(self):
+        self.li = []
+        
+
+    def push(self, x: int) -> None:
+        self.li.append(x)
+
+    def pop(self) -> int:
+        x = self.li[0]
+        print(self.li)
+        self.li[:] = self.li[1:]
+        print(self.li)
+        return x
+
+    def peek(self) -> int:
+        return self.li[0]
+    
+    def empty(self) -> bool:
+        return not bool(self.li)
+        
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+```
+## 144. Binary Tree Preorder Traversal
+Given the root of a binary tree, return the preorder traversal of its nodes' values.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        li = []
+        def preorder(root):
+            if root:
+                li.append(root.val)
+                preorder(root.left)
+                preorder(root.right)
+        preorder(root)
+        return li
+```
+## 94. Binary Tree Inorder Traversal
+Given the root of a binary tree, return the inorder traversal of its nodes' values.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        li = []
+        def inorder(root):
+            if root: # if no left and right node present then func should not go ahead
+                inorder(root.left)
+                li.append(root.val)
+                inorder(root.right)
+        inorder(root)
+        return li
+```
+## 145. Binary Tree Postorder Traversal
+Given the root of a binary tree, return the postorder traversal of its nodes' values.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        li = []
+        def postorder(root):
+            if root:
+                postorder(root.left)
+                postorder(root.right)
+                li.append(root.val)
+        postorder(root)
+        return li
+```
+

@@ -605,4 +605,268 @@ class Solution:
         postorder(root)
         return li
 ```
+## 102. Binary Tree Level Order Traversal
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        # the method is to create two lists, one main lists and another nested list. create a nest list and append 3 to it. pop 3 and then derive its left and append to nested list and right and append to nested list. add this nested list to main list. pop last element of nested list then loop through it and derive each ones left and right child.
+        li = [] # main queue
+        li.append([root]) # This is essential else it wont go in while loop
+        main_list = []
+        if root is None:
+            return []
+        main_list.append([root.val])
+        while li:# loop through till all levels are reached
+        # for i in range(2):
+            # print('List value is')
+            # print(li)
+            nested_li = [] # create nested list
+            nested_val_li = []
+            first_elem = li.pop(0)
+            for i in first_elem:
+                if i.left is not None:
+                    nested_li.append(i.left)
+                    nested_val_li.append(i.left.val)
+                if i.right is not None:
+                    nested_li.append(i.right)
+                    nested_val_li.append(i.right.val)
+            if nested_li:
+                li.append(nested_li)
+                main_list.append(nested_val_li)
+            # print('New list')
+            # print(li)
+            # print(li)
+            # print(main_list)
+        # print(li)
+        # print(main_list)
+        return main_list
+```
+## 104. Maximum Depth of Binary Tree
+Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right      
+def height(root):   
+    if root:
+        lheight = height(root.left)
+        rheight = height(root.right)
+        if lheight >= rheight:
+            return lheight + 1
+        else:
+            return rheight + 1
+    else:
+        return 0
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        return height(root)
+```
+## 101. Symmetric Tree
+Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+def solve(root1, root2):
+    # basically we will solve for two sub trees. These two can be any two nodes. both nodes should be empty then return true and if one of them is empty then return false and last combination is that the corresponding root should have same value and their left and right subtree root node if put into solve function would return True.
+    if not root1 and not root2:
+        return True
+    elif not root1 or not root2:
+        return False
+    return root1.val == root2.val and solve(root1.left, root2.right) and solve(root1.right, root2.left)
+        
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        return solve(root.left, root.right)
+```
+## 226. Invert Binary Tree
+Given the root of a binary tree, invert the tree, and return its root.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+  #    0 -> 2 to power 0, starting 2 to power 0 - 1, (ending 2 to power 1) - 2
+  #   1 2 -> 2 to power 1, starting 2 to power 1 - 1, (ending 2 to power 2) - 2
+  #  3 4 5 6 -> 2 to power 2, starting 2 to power 2 - 1, (ending 2 to power 3) - 2
+  # 7 8 9 10 11 12 13 14 -> 2 to power 3, starting 2 to power 3 - 1, (ending 2 to power 4 ) - 2
+# above list approaach is not correct as in return we need Treenode.
+# start with a simple approach of swapping left and right.
+# emphasising the need for previous solution.
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return None
+        root.left, root.right = root.right, root.left
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        return root
+```
+## 112. Path Sum
+Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum. A leaf is a node with no children.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right    
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        if root.left is None and root.right is None:
+            if root.val == targetSum:
+                return True
+            else:
+                return False
+        if_in_left,if_in_right = False, False
+        if root.left:
+            if_in_left = self.hasPathSum(root.left, targetSum - root.val)
+        if root.right:
+            if_in_right = self.hasPathSum(root.right, targetSum - root.val)
+        return if_in_left or if_in_right
+```
+## 700. Search in a Binary Search Tree
+You are given the root of a binary search tree (BST) and an integer val. Find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if not root:
+            return None
+        if root.val == val:
+            # print('when equal')
+            # print(root.val)
+            return root
+        elif root.val < val:
+            # print('In right')
+            # print(root.val)
+            return self.searchBST(root.right, val)
+        elif root.val > val:
+            # print('In left')
+            # print(root.val)
+            return self.searchBST(root.left, val)        
+```
+## 701. Insert into a Binary Search Tree
+You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node of the BST after the insertion. It is guaranteed that the new value does not exist in the original BST. Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after insertion. You can return any of them.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if root is None:
+            return TreeNode(val)
+        sacred_root = root
+        parent = None
+        while root:
+            parent = root 
+            if root.val < val:
+                root = root.right
+            elif root.val > val:
+                root = root.left
+        if parent.val > val:
+            parent.left = TreeNode(val)
+        else:
+            parent.right = TreeNode(val)
+        return sacred_root
+```
+## 98. Validate Binary Search Tree
+Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+A valid BST is defined as follows:
+The left subtree of a node contains only nodes with keys less than the node's key.
+The right subtree of a node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    di = {}
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def inorder(root):
+            if not root:
+                return True
+            if not inorder(root.left):
+                return False
+            if root.val <= self.prev:
+                return False
+            self.prev = root.val
+            return inorder(root.right)
 
+        self.prev = -math.inf
+        return inorder(root)
+```
+ ## 653. Two Sum IV - Input is a BST
+ Given the root of a Binary Search Tree and a target number k, return true if there exist two elements in the BST such that their sum is equal to the given target.
+ ```python
+ # Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        di = {}
+        def traverse(root):
+            if root is None:
+                return None
+            traverse(root.left)
+            di[root.val] = root
+            traverse(root.right)
+        traverse(root)
+        # print(di)
+        for i, j in di.items():
+            if k - i in di and j != di[k - i]:
+                return True
+        return False
+ ```
+ ## 235. Lowest Common Ancestor of a Binary Search Tree
+ Given a binary search tree (BST), find the lowest common ancestor (LCA) of two given nodes in the BST.
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        while root:
+            if root.val < p.val and root.val < q.val:
+                root = root.right
+            elif root.val > p.val and root.val > q.val:
+                root = root.left
+            else:
+                return root
+```

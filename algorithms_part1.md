@@ -600,3 +600,184 @@ class Solution:
         dfs(1,[])
         return ret
 ```
+
+## 46. Permutations
+
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+```python
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        permutation = []
+        def inner(arr,curr=[],taken=set()):
+            if len(arr) == len(taken):
+                permutation.append(curr)
+                return
+            for idx in range(len(arr)):
+                if idx not in taken:
+                    taken.add(idx)
+                    inner(arr,curr + [arr[idx]],taken)
+                    taken.remove(idx)
+        inner(nums)
+        return permutation
+```
+
+## 784. Letter Case Permutation
+
+Given a string s, you can transform every letter individually to be lowercase or uppercase to create another string. Return a list of all possible strings we could create. Return the output in any order.
+
+```python
+class Solution:
+    def letterCasePermutation(self, s: str) -> List[str]:
+        res = []
+        def helper(per):
+            i = len(per)
+            if i == len(s):
+                res.append(per)
+                return
+            if s[i].isalpha():
+                helper(per + s[i].swapcase())
+            helper(per + s[i])
+        helper('')
+        return res
+```
+
+## 120. Triangle
+
+Given a triangle array, return the minimum path sum from top to bottom. For each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.
+
+```python
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        # # Create a list called dp
+        # dp = [0] * (len(triangle))
+        # j = 0
+        # dp[0] = triangle[0][j]
+        # for i in range(1, len(triangle)):
+        #     # print(triangle[i][j+1])
+        #     # print(dp[i-1])
+        #     # print(dp[i])
+        #     if triangle[i][j] < triangle[i][j+1]:
+        #         dp[i] = dp[i-1] + triangle[i][j]
+        #     else:
+        #         print('In else condition')
+        #         dp[i] = dp[i-1] + triangle[i][j + 1]
+        #         j = j + 1
+        #     print('Value of j is ' + str(triangle[i][j]))
+        #     print('Sum is ' + str(dp[i]))
+        #     print(dp)
+        # # print(dp)
+        # return dp[len(triangle) - 1]
+        n = len(triangle)
+		
+        for i in range(n-1, 0, -1):
+            for j in range(0, len(triangle[i])-1):
+                triangle[i-1][j] += min(triangle[i][j], triangle[i][j+1])
+        return triangle[0][0]
+```
+
+## 70. Climbing Stairs
+
+You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+```python
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        # Checking samples seems it is following Fibonacci pattern
+        a, b = 1, 2
+        if n <= 2:
+            return n
+        for i in range(n-2):
+            c = a + b
+            a,b = b,c
+            # print(c)
+        return c
+```
+
+## 198. House Robber
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night. Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        dp = [0] * (len(nums) + 1) # Create an array for all the lists which is an essential step in dynamic programming
+        dp[0] = 0
+        dp[1] = nums[0]
+        for i in range(1, len(nums)):
+            dp[i+1] = max(dp[i], dp[i-1] + nums[i])
+        return dp[len(nums)]
+```
+
+## 190. Reverse Bits
+
+Reverse bits of a given 32 bits unsigned integer.
+
+```python
+class Solution:
+    def reverseBits(self, n: int) -> int:
+        rev, bits = 0, 0
+        
+        while n:
+            rev <<= 1
+            rev += (n & 1)
+            bits += 1
+            n >>= 1
+            
+        rev <<= (32 - bits)
+
+        # or:
+        # for _ in range(32):
+        #     rev <<= 1
+        #     rev += (n & 1)
+        #     n >>= 1
+            
+        return rev
+```
+
+## 136. Single Number
+
+Given a non-empty array of integers nums, every element appears twice except for one. Find that single one. You must implement a solution with a linear runtime complexity and use only constant extra space.
+
+```python
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        di = {}
+        for i in nums:
+            if i not in di:
+                di[i] = 1
+            else:
+                di[i] = di[i] + 1
+        for key, val in di.items():
+            if val == 1:
+                return key
+```
+
+## 231. Power of Two
+
+Given an integer n, return true if it is a power of two. Otherwise, return false. An integer n is a power of two, if there exists an integer x such that n == 2x.
+```python
+class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        # when only one bit is set then n & (n-1) gives 0
+        if n > 0 and (n & (n-1)) == 0:
+            return True
+        return False
+```
+
+## 191. Number of 1 Bits
+
+Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the Hamming weight).
+
+```python
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        result = 0
+        while n:
+        # mutliply n with n-1, result will be binary digit with rightmost 1 replaced
+        # by 0
+            n &= n-1
+            result += 1
+        return result
+```
+

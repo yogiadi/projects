@@ -230,3 +230,127 @@ class Solution:
                 return prevhead
             prevhead = prevhead.next
 ```
+
+## 19. Remove Nth Node From End of List
+
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        # print('New execution')
+        if not head.next:
+            return None
+        prevhead = head
+        count = 0
+        while prevhead:
+            count = count + 1
+            prevhead = prevhead.next
+        # print(count)
+        prevhead = head
+        cnt = 0
+        while prevhead:
+            if ((count - n) - 1 == cnt):
+                # print(prevhead.val)
+                thirdhead = prevhead.next
+                if thirdhead:
+                    prevhead.next = thirdhead.next
+                else:
+                    prevhead.next = None
+            cnt = cnt + 1
+            prevhead = prevhead.next
+        if count == n:
+            prevhead = head
+            return head.next
+        return head
+```
+
+## 3. Longest Substring Without Repeating Characters
+
+Given a string s, find the length of the longest substring without repeating characters.
+
+```python
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        # d v d f 
+        # start = 0, end = 0, sum = 1
+        # start = 0, end = 1, sum = 2
+        # start = 1, end = 2, sum = 2
+        # start = 1, end = 3, sum = 3
+        if len(s) == 1:
+            return 1
+        letter_dict = {}
+        max_sum = 0
+        start = 0
+        for end in range(len(s)):
+            # print('end is ' + str(end))
+            
+            if s[end] in letter_dict:
+                start = max(start, letter_dict[s[end]] + 1)
+            letter_dict[s[end]] = end
+            max_sum = max(max_sum, end - start + 1)
+            # print('start is ' + str(start))
+            # print('max_sum is ' + str(max_sum))
+        return max_sum
+```
+
+## 567. Permutation in String
+
+Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.
+
+```python
+from collections import defaultdict
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2):
+            return False
+        dict_s1, dict_s2 = {},{}
+        for i in range(97,123):
+            dict_s1[chr(i)],dict_s2[chr(i)] = 0,0
+        for i in range(len(s1)):
+            dict_s1[s1[i]] =   dict_s1[s1[i]] + 1
+            dict_s2[s2[i]] =   dict_s2[s2[i]] + 1
+        for i in range(len(s2) - len(s1)):
+            if dict_s1 == dict_s2:
+                return True
+            # print(s2[i])
+            # print(s2[i + len(s1)])
+            dict_s2[s2[i + len(s1)]] = dict_s2[s2[i + len(s1)]] + 1
+            dict_s2[s2[i]] = dict_s2[s2[i]] - 1
+            # print(dict_s2)
+        if dict_s1 == dict_s2:
+            return True
+        return False
+```
+
+## 733. Flood Fill
+
+An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image. You are also given three integers sr, sc, and newColor. You should perform a flood fill on the image starting from the pixel image[sr][sc].To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with newColor. Return the modified image after performing the flood fill.
+
+```python
+class Solution:
+    def floodFill(self, image: List[List[int]], sr: int, sc: int, newColor: int) -> List[List[int]]:
+        rows , cols = len(image), len(image[0])
+        color = image[sr][sc]
+        if color == newColor:
+            return image
+        def dfs(r, c):
+            if image[r][c] == color:
+                image[r][c] = newColor
+                if r >= 1 : # top
+                    dfs(r - 1, c)
+                if r < rows - 1 : # bottom
+                    dfs(r + 1, c)
+                if c >= 1 : # left
+                    dfs(r, c -1)
+                if c < cols - 1 : # right
+                    dfs(r, c + 1)
+        dfs(sr, sc)
+        return image
+```
+

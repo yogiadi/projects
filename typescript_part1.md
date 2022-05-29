@@ -29,4 +29,20 @@ document.body.textContent = greeter(user);
 ```
 Similarly, if we use an array in user variable above code will run but it will give a compile time error, though on compiling it would still generate a .js file.
 
+## Interfaces
+
+Interface is like a struct which has some predefined structure. For example, if there is an interface called Person , we can define it with two properties such as firstname and lastname. Two interfaces are compatible if their internal structures are compatible.
+
+```typescript
+interface Person {
+  firstName: string;
+  lastName: string;
+}
+function greeter(person: Person) {
+  return "Hello, " + person.firstName + " " + person.lastName;
+}
+let user = { firstName: "Jane", lastName: "User" };
+document.body.textContent = greeter(user);
+```
+
 

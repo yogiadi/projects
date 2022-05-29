@@ -45,4 +45,39 @@ let user = { firstName: "Jane", lastName: "User" };
 document.body.textContent = greeter(user);
 ```
 
+## Classes 
+
+Class in typescript has both fields and constructor as well. For example, see below:
+
+```typescript
+class Student {
+  fullName: string;
+  constructor(
+    public firstName: string,
+    public middleInitial: string,
+    public lastName: string
+  ) {
+    this.fullName = firstName + " " + middleInitial + " " + lastName;
+  }
+}
+interface Person {
+  firstName: string;
+  lastName: string;
+}
+function greeter(person: Person) {
+  return "Hello, " + person.firstName + " " + person.lastName;
+}
+let user = new Student("Jane", "M.", "User");
+document.body.textContent = greeter(user);
+```
+Every value in typescript has set of behaviours , we can observe by running different operations.
+
+```typescript
+let message = "Hello World"
+message.toLowerCase();
+console.log(message.toLowerCase());
+```
+
+
+
 

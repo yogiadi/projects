@@ -354,3 +354,249 @@ class Solution:
         return image
 ```
 
+## 695. Max Area of Island
+
+You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water. The area of an island is the number of cells with a value 1 in the island. Return the maximum area of an island in grid. If there is no island, return 0.
+
+```python
+class Solution(object):
+    def maxAreaOfIsland(self, grid):
+        seen = set()
+        def area(r, c):
+            if not (0 <= r < len(grid) and 0 <= c < len(grid[0])
+                    and (r, c) not in seen and grid[r][c]):
+                return 0
+            seen.add((r, c))
+            return (1 + area(r+1, c) + area(r-1, c) +
+                    area(r, c-1) + area(r, c+1))
+
+        return max(area(r, c)
+                   for r in range(len(grid))
+                   for c in range(len(grid[0])))
+```
+
+## 617. Merge Two Binary Trees
+
+You are given two binary trees root1 and root2. Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree. Return the merged tree.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root1 is None:
+            return root2
+        if root2 is None:
+            return root1
+        root1.val += root2.val
+        root1.left = self.mergeTrees(root1.left, root2.left)
+        root1.right = self.mergeTrees(root1.right, root2.right)
+        return root1
+```
+
+## 116. Populating Next Right Pointers in Each Node
+
+You are given a perfect binary tree where all leaves are on the same level, and every parent has two children. The binary tree has the following definition:
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+Initially, all next pointers are set to NULL.
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+
+class Solution:
+    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+        def dfs(root):
+            if root is None or root.left is None:
+                return None
+            root.left.next = root.right
+            if root.next:
+                root.right.next = root.next.left
+            dfs(root.left)
+            dfs(root.right)
+        dfs(root)
+        return root
+```
+
+## 542. 01 Matrix
+
+Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell. The distance between two adjacent cells is 1.
+
+```python
+class Solution:
+    def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
+        import math
+        dist = []
+        for i in range(len(mat)):
+            dist.append([])
+            for j in range(len(mat[i])):
+                dist[i].append(math.inf)
+        for i in range(len(mat)):
+            for j in range(len(mat[i])):
+                if mat[i][j] == 0:
+                    dist[i][j] = 0
+                else:
+                    if i > 0: # check top
+                        dist[i][j] = min(dist[i][j], dist[i-1][j] + 1)
+                    if j > 0: # check left
+                        dist[i][j] = min(dist[i][j], dist[i][j - 1] + 1)
+        # print(dist)
+        # Bottom and right are done in separate passes because left and top are precomputed
+        for i in range(len(mat) - 1, -1,-1):
+            # print(i)
+            # print(len(mat[i]))
+            for j in range(len(mat[i]) - 1, -1,-1):
+                if i < len(mat) - 1: # check bottom
+                    dist[i][j] = min(dist[i][j], dist[i + 1][j] + 1)
+                if j < len(mat[i]) - 1: # check right
+                    dist[i][j] = min(dist[i][j], dist[i][j + 1] + 1)
+        return dist
+```
+
+## 994. Rotting Oranges
+
+You are given an m x n grid where each cell can have one of three values:
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+```python
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        R = len(grid)
+        C = len(grid[0])
+        
+        Q = collections.deque()
+        
+        for i in range(R):
+            for j in range(C):
+                if grid[i][j] == 2:
+                    Q.append((i, j))
+        
+        time = 0
+        while(Q):
+            time -= 1
+            size = len(Q)
+            for s in range(size):
+                (i, j) = Q.popleft()
+                if i>0 and grid[i-1][j]==1:
+                    Q.append((i-1, j))
+                    grid[i-1][j] = time
+                if j>0 and grid[i][j-1]==1:
+                    Q.append((i, j-1))
+                    grid[i][j-1] = time
+                if i+1<R and grid[i+1][j]==1:
+                    Q.append((i+1, j))
+                    grid[i+1][j] = time
+                if j+1<C and grid[i][j+1]==1:
+                    Q.append((i, j+1))
+                    grid[i][j+1] = time
+        for i in range(R):
+            for j in range(C):
+                if grid[i][j]==1:
+                    return -1
+        return max(0, -time-1)
+```
+
+## 21. Merge Two Sorted Lists
+
+You are given the heads of two sorted linked lists list1 and list2. Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists. Return the head of the merged linked list.
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        prevhead = ListNode(-1)
+        currnode3 = prevhead
+        if not list1 and not list2:
+            return None
+        elif not list1:
+            return list2
+        elif not list2:
+            return list1
+        currnode1 = list1
+        currnode2 = list2
+        ## We are supposed to return prevhead.next , so even if we store prevhead with -1 it should not matter. currnode3 will be assigned a value of prevhead but in the subsequent steps it will be assigned currnode3.next = currnode1. then at the end treat it same as l1 and l2 where the next value is assigned to same variable currnode3. At the end we would simply return prevhead.next So it wouldn't return the value of prehead, it will start from its next value.
+        while currnode1 and currnode2:
+            if currnode1.val <= currnode2.val:
+                currnode3.next = currnode1
+                currnode1 = currnode1.next
+            else:
+                currnode3.next = currnode2
+                currnode2 = currnode2.next
+            currnode3 = currnode3.next
+        if currnode1 is None:
+            currnode3.next = currnode2
+        else:
+            currnode3.next = currnode1
+        return prevhead.next
+```
+
+## 206. Reverse Linked List
+
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # Begin with iterating through all the nodes , brute way seems to be insert all of this in  a list and then create a new Linked list by iterating through given list.
+        li = [] # Define a list to store all data of linked list.
+        while head:# While loop to iterate through linked list
+            li.append(head.val) # append in list the next head val
+            head = head.next # Keep iteration going by assigning next value to head itself.
+        li.reverse()
+        prevhead = ListNode(-1)
+        header = prevhead
+        for i in range(len(li)):
+            currentnode = ListNode(li[i])
+            header.next = currentnode
+            header = header.next
+        return prevhead.next # As mentioned earlier return with prevhead.next
+```
+
+## 77. Combinations
+
+Given two integers n and k, return all possible combinations of k numbers out of the range [1, n]. You may return the answer in any order.
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        def dfs(idx, arr):
+            if len(arr) == k:
+                ret.append(arr)
+                return
+            
+            for v in range(idx,n+1):
+                dfs(v+1, arr + [v]) 
+        
+        ret = []
+        dfs(1,[])
+        return ret
+```
